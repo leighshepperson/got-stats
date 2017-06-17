@@ -1,5 +1,6 @@
 defmodule GOTStats.GraphQL.Models.House do
   defstruct [
+    :id,
     :url,
     :name,
     :region,

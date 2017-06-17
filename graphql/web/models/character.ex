@@ -1,5 +1,6 @@
 defmodule GOTStats.GraphQL.Models.Character do
   defstruct [
+    :id,
     :url,
     :name,
     :gender,

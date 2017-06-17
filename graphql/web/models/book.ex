@@ -1,5 +1,6 @@
 defmodule GOTStats.GraphQL.Models.Book do
   defstruct [
+    :id,
     :url,
     :name,
     :isbn,

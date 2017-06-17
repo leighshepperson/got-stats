@@ -1,12 +1,14 @@
 defmodule GOTStats.GraphQL.Schema do
   use Absinthe.Schema
   use Absinthe.Relay.Schema
-  use Timex
+  alias GOTStats.GraphQL.Adapters.IceAndFire
   alias GOTStats.GraphQL.Models.{Book, Root, Character}
 
   node interface do
     resolve_type fn
       %Root{}, _ -> :root
+      %Book{}, _ -> :book
+      %Character{}, _ -> :character
       _, _ ->  nil
     end
   end
@@ -25,7 +27,7 @@ defmodule GOTStats.GraphQL.Schema do
       resolve fn
         pagination_args, %{source: %{characters: characters}} ->
           connection = Absinthe.Relay.Connection.from_list(
-            GOTStats.GraphQL.Adapters.IceAndFire.get_characters(characters), pagination_args
+            IceAndFire.get_characters(characters), pagination_args
           )
           {:ok, connection}
         end
@@ -34,7 +36,7 @@ defmodule GOTStats.GraphQL.Schema do
       resolve fn
         pagination_args, %{source: %{pov_characters: pov_characters}} ->
           connection = Absinthe.Relay.Connection.from_list(
-            GOTStats.GraphQL.Adapters.IceAndFire.get_characters(pov_characters), pagination_args
+            IceAndFire.get_characters(pov_characters), pagination_args
           )
           {:ok, connection}
         end
@@ -84,7 +86,7 @@ defmodule GOTStats.GraphQL.Schema do
       resolve fn
         pagination_args, %{source: _root} ->
           connection = Absinthe.Relay.Connection.from_list(
-            GOTStats.GraphQL.Adapters.IceAndFire.get_books(), pagination_args
+            IceAndFire.get_books(), pagination_args
           )
           {:ok, connection}
         end
@@ -96,12 +98,12 @@ defmodule GOTStats.GraphQL.Schema do
 
   query do
     field :root, :root do
-      resolve fn(_,_) -> {:ok, %Root{}} end
+      resolve fn(_,_) -> {:ok, %Root{id: 1}} end
     end
     node field do
       resolve fn
-        %{type: :root}, _ ->
-          {:ok, %Root{}}
+        %{type: :root, id: id}, _ -> {:ok, %Root{id: id}}
+        %{type: :character, id: id}, _ -> {:ok, IceAndFire.get_character(id)}
       end
     end
   end
