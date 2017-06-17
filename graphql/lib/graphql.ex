@@ -9,6 +9,8 @@ defmodule GOTStats.GraphQL do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
+      worker(Cachex, [:got_stats_cachex]),
+      supervisor(Task.Supervisor, [[name: GOTStats.GraphQL.TaskSupervisor]]),
       supervisor(GOTStats.GraphQL.Endpoint, []),
       # Start your own worker by calling: GOTStats.GraphQL.Worker.start_link(arg1, arg2, arg3)
       # worker(GOTStats.GraphQL.Worker, [arg1, arg2, arg3]),
@@ -16,7 +18,11 @@ defmodule GOTStats.GraphQL do
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: GOTStats.GraphQL.Supervisor]
+    opts = [
+      strategy: :one_for_one, name: GOTStats.GraphQL.Cache.Supervisor,
+      strategy: :one_for_one, name: GOTStats.GraphQL.Supervisor,
+      strategy: :one_for_one, name: GOTStats.GraphQL.TaskSupervisor
+    ]
     Supervisor.start_link(children, opts)
   end
 

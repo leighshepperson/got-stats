@@ -17,7 +17,18 @@ defmodule GOTStats.GraphQL.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {GOTStats.GraphQL, []},
-     applications: [:phoenix, :phoenix_pubsub, :cowboy, :logger, :gettext]]
+     applications: [
+       :phoenix,
+       :phoenix_pubsub,
+       :cowboy,
+       :logger,
+       :gettext,
+       :absinthe_plug,
+       :absinthe_relay,
+       :timex,
+       :cachex
+     ]
+    ]
   end
 
   # Specifies which paths to compile per environment.
@@ -31,6 +42,12 @@ defmodule GOTStats.GraphQL.Mixfile do
     [{:phoenix, "~> 1.2.1"},
      {:phoenix_pubsub, "~> 1.0"},
      {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"}]
+     {:cowboy, "~> 1.0"},
+     {:httpoison, "~> 0.11.2"},
+     {:poison, "~> 2.0"},
+     {:absinthe_plug, "~> 1.2.0"},
+     {:absinthe_relay, "~> 1.2.0"},
+     {:timex, "~> 3.0"},
+     {:cachex, "~> 2.1"}]
   end
 end
